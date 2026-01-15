@@ -124,6 +124,18 @@ export class PaymentGateway {
     @Column({ type: 'int', default: 0 })
     fit_score: number; // Calculated field for ranking
 
+    @Column({ default: 'pending' })
+    approval_status: string; // 'pending', 'approved', 'rejected'
+
+    @Column({ type: 'timestamp', nullable: true })
+    submitted_at: Date;
+
+    @Column({ type: 'timestamp', nullable: true })
+    reviewed_at: Date;
+
+    @Column({ nullable: true })
+    reviewed_by: string; // Admin identifier
+
     @OneToMany(() => Sponsor, (sponsor) => sponsor.gateway)
     sponsors: Sponsor[];
 

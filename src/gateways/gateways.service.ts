@@ -22,7 +22,11 @@ export class GatewaysService {
     async create(createGatewayDto: CreateGatewayDto): Promise<PaymentGateway> {
         const { countries_supported, currencies_supported, ...gatewayData } = createGatewayDto;
 
-        const gateway = this.gatewayRepository.create(gatewayData);
+        const gateway = this.gatewayRepository.create({
+            ...gatewayData,
+            approval_status: 'pending',
+            submitted_at: new Date(),
+        });
 
         // Resolve Countries
         if (countries_supported && countries_supported.length > 0) {
@@ -130,8 +134,9 @@ export class GatewaysService {
             queryBuilder.andWhere('FIND_IN_SET(:business_type, gateway.business_type) > 0', { business_type });
         }
 
-        // Only show active gateways by default
+        // Only show active and approved gateways by default
         queryBuilder.andWhere('gateway.status_slot IN (:...statuses)', { statuses: ['active', 'featured'] });
+        queryBuilder.andWhere('gateway.approval_status = :approval_status', { approval_status: 'approved' });
 
         // Sorting
         queryBuilder.orderBy(`gateway.${sortBy}`, sortOrder);

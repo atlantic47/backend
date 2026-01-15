@@ -9,6 +9,7 @@ import { SponsorsModule } from './sponsors/sponsors.module';
 import { OffersModule } from './offers/offers.module';
 import { CountriesModule } from './countries/countries.module';
 import { ConsultationsModule } from './consultations/consultations.module';
+import { AdminModule } from './admin/admin.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -33,6 +34,7 @@ import { AppService } from './app.service';
     OffersModule,
     CountriesModule,
     ConsultationsModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],

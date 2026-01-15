@@ -389,17 +389,36 @@ async function seed() {
     }
     console.log(`✅ Seeded ${savedGateways.length} payment gateways with relations`);
 
-    // Seed Sponsors
+    // Seed Sponsors with realistic dates for testing
     const sponsorRepo = dataSource.getRepository(Sponsor);
-    const sponsors = savedGateways.filter(g => g.status_slot === 'featured').slice(0, 4).map((gateway, index) => ({
-        gateway_id: gateway.id,
-        is_featured: true,
-        display_order: index,
-        recommended_badge: index === 0,
-        monthly_price: 99 + index * 50,
-    }));
-    await sponsorRepo.save(sponsors as any);
-    console.log(`✅ Seeded ${sponsors.length} sponsors`);
+    const now = new Date();
+
+    const sponsorData = savedGateways.filter(g => g.status_slot === 'featured').slice(0, 10).map((gateway, index) => {
+        const startDate = new Date(now);
+        startDate.setDate(startDate.getDate() - (30 - index * 3)); // Stagger start dates
+
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + 30); // 30 days from start
+
+        const daysRemaining = Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+        return {
+            gateway_id: gateway.id,
+            is_featured: true,
+            display_order: index,
+            recommended_badge: index === 0,
+            monthly_price: 99 + index * 50,
+            start_date: startDate,
+            end_date: endDate,
+            status: daysRemaining > 0 ? 'active' : 'expired',
+            vibe_score: 7 + (index % 4), // 7-10
+            primary_corridor: index % 3 === 0 ? 'Global → Africa' : index % 3 === 1 ? 'US → LATAM' : 'EU → Asia',
+            verified_2026: index < 5, // First 5 are verified
+        };
+    });
+
+    await sponsorRepo.save(sponsorData as any);
+    console.log(`✅ Seeded ${sponsorData.length} sponsors with expiration dates`);
 
     // Seed Offers
     const offerRepo = dataSource.getRepository(FounderOffer);
