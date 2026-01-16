@@ -8,6 +8,7 @@ import { Country } from './entities/country.entity';
 import { Currency } from './entities/currency.entity';
 import { Consultation } from './entities/consultation.entity';
 import { ConsultationRecommendation } from './entities/consultation-recommendation.entity';
+import { SeoMetadata } from './entities/seo-metadata.entity';
 
 @Module({
     imports: [
@@ -20,7 +21,7 @@ import { ConsultationRecommendation } from './entities/consultation-recommendati
                 username: configService.get('database.username'),
                 password: configService.get('database.password'),
                 database: configService.get('database.database'),
-                entities: [PaymentGateway, Sponsor, FounderOffer, Country, Currency, Consultation, ConsultationRecommendation],
+                entities: [PaymentGateway, Sponsor, FounderOffer, Country, Currency, Consultation, ConsultationRecommendation, SeoMetadata],
                 synchronize: true, // Set to false in production, use migrations
                 logging: process.env.NODE_ENV === 'development',
             }),
