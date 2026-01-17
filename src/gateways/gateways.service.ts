@@ -159,7 +159,7 @@ export class GatewaysService {
     async findBySlug(slug: string): Promise<PaymentGateway> {
         const gateway = await this.gatewayRepository.findOne({
             where: { slug },
-            relations: ['sponsors', 'offers', 'countries', 'currencies'],
+            relations: ['sponsors', 'offers', 'countries', 'currencies', 'pricing_structures'],
         });
 
         if (!gateway) {

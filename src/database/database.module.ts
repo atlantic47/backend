@@ -9,6 +9,7 @@ import { Currency } from './entities/currency.entity';
 import { Consultation } from './entities/consultation.entity';
 import { ConsultationRecommendation } from './entities/consultation-recommendation.entity';
 import { SeoMetadata } from './entities/seo-metadata.entity';
+import { PricingStructure } from './entities/pricing-structure.entity';
 
 @Module({
     imports: [
@@ -21,7 +22,7 @@ import { SeoMetadata } from './entities/seo-metadata.entity';
                 username: configService.get('database.username'),
                 password: configService.get('database.password'),
                 database: configService.get('database.database'),
-                entities: [PaymentGateway, Sponsor, FounderOffer, Country, Currency, Consultation, ConsultationRecommendation, SeoMetadata],
+                entities: [PaymentGateway, Sponsor, FounderOffer, Country, Currency, Consultation, ConsultationRecommendation, SeoMetadata, PricingStructure],
                 synchronize: true, // Set to false in production, use migrations
                 logging: process.env.NODE_ENV === 'development',
             }),

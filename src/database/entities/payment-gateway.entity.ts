@@ -13,6 +13,7 @@ import { Sponsor } from './sponsor.entity';
 import { FounderOffer } from './founder-offer.entity';
 import { Country } from './country.entity';
 import { Currency } from './currency.entity';
+import { PricingStructure } from './pricing-structure.entity';
 
 @Entity('payment_gateways')
 @Index(['status_slot'])
@@ -141,6 +142,9 @@ export class PaymentGateway {
 
     @OneToMany(() => FounderOffer, (offer) => offer.gateway)
     offers: FounderOffer[];
+
+    @OneToMany(() => PricingStructure, (pricing) => pricing.gateway)
+    pricing_structures: PricingStructure[];
 
     @CreateDateColumn()
     created_at: Date;
