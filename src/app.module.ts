@@ -13,6 +13,7 @@ import { AdminModule } from './admin/admin.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SeoModule } from './seo/seo.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { SeoModule } from './seo/seo.module';
     ConsultationsModule,
     AdminModule,
     SeoModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

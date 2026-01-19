@@ -1,12 +1,10 @@
-import { Controller, Get, Post, Param, UseGuards, Body, HttpException, HttpStatus, SetMetadata } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, HttpException, HttpStatus, SetMetadata } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { AdminGuard } from './admin.guard';
 
 export const IS_PUBLIC_KEY = 'isPublic';
 export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
 
 @Controller('admin')
-@UseGuards(AdminGuard)
 export class AdminController {
     constructor(private readonly adminService: AdminService) { }
 

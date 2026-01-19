@@ -55,7 +55,11 @@ export class PricingService {
             ...updatePricingDto,
             last_updated: new Date()
         });
-        return await this.pricingRepository.findOne({ where: { id } });
+        const pricing = await this.pricingRepository.findOne({ where: { id } });
+        if (!pricing) {
+            throw new Error('Pricing structure not found');
+        }
+        return pricing;
     }
 
     async delete(id: number): Promise<void> {

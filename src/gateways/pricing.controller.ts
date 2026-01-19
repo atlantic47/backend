@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
-import { PricingService, CreatePricingDto, UpdatePricingDto } from './pricing.service';
-import { AdminGuard } from '../admin/admin.guard';
+import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { PricingService } from './pricing.service';
+import type { CreatePricingDto, UpdatePricingDto } from './pricing.service';
 
 export const Public = () => (target: any, key?: string, descriptor?: PropertyDescriptor) => {
     if (descriptor) {
@@ -22,7 +22,6 @@ export class PricingController {
 
     // Admin-only endpoints
     @Post(':id/pricing')
-    @UseGuards(AdminGuard)
     async createPricing(@Param('id') gatewayId: string, @Body() createPricingDto: CreatePricingDto) {
         return await this.pricingService.create({
             ...createPricingDto,
@@ -31,13 +30,11 @@ export class PricingController {
     }
 
     @Put('pricing/:id')
-    @UseGuards(AdminGuard)
     async updatePricing(@Param('id') id: string, @Body() updatePricingDto: UpdatePricingDto) {
         return await this.pricingService.update(+id, updatePricingDto);
     }
 
     @Delete('pricing/:id')
-    @UseGuards(AdminGuard)
     async deletePricing(@Param('id') id: string) {
         await this.pricingService.delete(+id);
         return { message: 'Pricing deleted successfully' };
