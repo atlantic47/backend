@@ -134,9 +134,14 @@ export class GatewaysService {
             queryBuilder.andWhere('FIND_IN_SET(:business_type, gateway.business_type) > 0', { business_type });
         }
 
-        // Only show active and approved gateways by default
+        // Only show active and approved gateways by default unless overridden
         queryBuilder.andWhere('gateway.status_slot IN (:...statuses)', { statuses: ['active', 'featured'] });
-        queryBuilder.andWhere('gateway.approval_status = :approval_status', { approval_status: 'approved' });
+
+        if (filterDto.approval_status) {
+            queryBuilder.andWhere('gateway.approval_status = :approval_status', { approval_status: filterDto.approval_status });
+        } else {
+            queryBuilder.andWhere('gateway.approval_status = :approval_status', { approval_status: 'approved' });
+        }
 
         // Sorting
         queryBuilder.orderBy(`gateway.${sortBy}`, sortOrder);

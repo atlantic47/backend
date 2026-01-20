@@ -78,4 +78,8 @@ export class FilterGatewayDto {
     @IsString()
     @IsIn(['ASC', 'DESC'])
     sortOrder?: 'ASC' | 'DESC' = 'DESC';
+
+    @IsOptional()
+    @IsString()
+    approval_status?: string;
 }
