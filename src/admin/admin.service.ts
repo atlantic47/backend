@@ -90,9 +90,4 @@ export class AdminService {
         return this.sponsorRepository.save(sponsor);
     }
 
-    // Authentication
-    validateAdminToken(token: string): boolean {
-        const adminSecret = process.env.ADMIN_SECRET_KEY || 'admin123';
-        return token === adminSecret;
-    }
 }

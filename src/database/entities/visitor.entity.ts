@@ -21,7 +21,7 @@ export class Visitor {
     @CreateDateColumn()
     first_seen: Date;
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
     @Index()
     last_seen: Date;
 

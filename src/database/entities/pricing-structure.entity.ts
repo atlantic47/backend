@@ -15,9 +15,9 @@ export class PricingStructure {
 
     // Pricing Model
     @Column({
-        type: 'enum',
-        enum: ['flat_rate', 'interchange_plus', 'tiered', 'subscription', 'custom'],
-        default: 'flat_rate'
+        type: 'varchar',
+        length: 32,
+        default: 'flat_rate',
     })
     pricing_model: string;
 
@@ -56,9 +56,9 @@ export class PricingStructure {
     @Column({ type: 'text', nullable: true })
     notes: string; // Special conditions, disclaimers
 
-    @UpdateDateColumn({ type: 'timestamp' })
+    @UpdateDateColumn({ type: 'datetime' })
     last_updated: Date;
 
-    @CreateDateColumn({ type: 'timestamp' })
+    @CreateDateColumn({ type: 'datetime' })
     created_at: Date;
 }

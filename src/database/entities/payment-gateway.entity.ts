@@ -128,10 +128,10 @@ export class PaymentGateway {
     @Column({ default: 'pending' })
     approval_status: string; // 'pending', 'approved', 'rejected'
 
-    @Column({ type: 'timestamp', nullable: true })
+    @Column({ type: 'datetime', nullable: true })
     submitted_at: Date;
 
-    @Column({ type: 'timestamp', nullable: true })
+    @Column({ type: 'datetime', nullable: true })
     reviewed_at: Date;
 
     @Column({ nullable: true })

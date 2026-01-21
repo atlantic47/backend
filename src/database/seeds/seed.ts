@@ -10,6 +10,7 @@ import { Country } from '../entities/country.entity';
 import { Currency } from '../entities/currency.entity';
 import { Sponsor } from '../entities/sponsor.entity';
 import { FounderOffer } from '../entities/founder-offer.entity';
+import { PricingStructure } from '../entities/pricing-structure.entity';
 
 // Full list of countries
 const countriesList = [
@@ -303,31 +304,49 @@ const gateways = [
 async function seed() {
     config();
 
+    const dbType = process.env.DB_TYPE || 'mysql';
+    const isSqlite = dbType === 'sqlite';
+
     const dataSource = new DataSource({
-        type: 'mysql',
-        host: process.env.DB_HOST || 'localhost',
-        port: parseInt(process.env.DB_PORT || '3306', 10),
-        username: process.env.DB_USERNAME || 'root',
-        password: process.env.DB_PASSWORD || '',
-        database: process.env.DB_DATABASE || 'payment_gateway_db',
-        entities: [PaymentGateway, Country, Currency, Sponsor, FounderOffer], // Added Currency
+        type: isSqlite ? 'sqlite' : 'mysql',
+        ...(isSqlite
+            ? { database: process.env.SQLITE_DB_PATH || 'data/dev.sqlite' }
+            : {
+                host: process.env.DB_HOST || 'localhost',
+                port: parseInt(process.env.DB_PORT || '3306', 10),
+                username: process.env.DB_USERNAME || 'root',
+                password: process.env.DB_PASSWORD || '',
+                database: process.env.DB_DATABASE || 'payment_gateway_db',
+            }),
+        entities: [PaymentGateway, Country, Currency, Sponsor, FounderOffer, PricingStructure],
         synchronize: true,
     });
 
     await dataSource.initialize();
     console.log('✅ Database connected');
 
-    // Clear existing data (disable FK checks)
-    await dataSource.query('SET FOREIGN_KEY_CHECKS = 0');
-    // Truncate tables including junction tables
-    await dataSource.query('TRUNCATE TABLE payment_gateways_countries');
-    await dataSource.query('TRUNCATE TABLE payment_gateways_currencies');
-    await dataSource.getRepository(FounderOffer).clear();
-    await dataSource.getRepository(Sponsor).clear();
-    await dataSource.getRepository(PaymentGateway).clear();
-    await dataSource.getRepository(Country).clear();
-    await dataSource.getRepository(Currency).clear();
-    await dataSource.query('SET FOREIGN_KEY_CHECKS = 1');
+    // Clear existing data (DB-specific)
+    if (isSqlite) {
+        await dataSource.query('PRAGMA foreign_keys = OFF');
+        await dataSource.query('DELETE FROM payment_gateways_countries');
+        await dataSource.query('DELETE FROM payment_gateways_currencies');
+        await dataSource.getRepository(FounderOffer).clear();
+        await dataSource.getRepository(Sponsor).clear();
+        await dataSource.getRepository(PaymentGateway).clear();
+        await dataSource.getRepository(Country).clear();
+        await dataSource.getRepository(Currency).clear();
+        await dataSource.query('PRAGMA foreign_keys = ON');
+    } else {
+        await dataSource.query('SET FOREIGN_KEY_CHECKS = 0');
+        await dataSource.query('TRUNCATE TABLE payment_gateways_countries');
+        await dataSource.query('TRUNCATE TABLE payment_gateways_currencies');
+        await dataSource.getRepository(FounderOffer).clear();
+        await dataSource.getRepository(Sponsor).clear();
+        await dataSource.getRepository(PaymentGateway).clear();
+        await dataSource.getRepository(Country).clear();
+        await dataSource.getRepository(Currency).clear();
+        await dataSource.query('SET FOREIGN_KEY_CHECKS = 1');
+    }
     console.log('🗑️  Cleared existing data');
 
     // Seed Countries
@@ -370,6 +389,10 @@ async function seed() {
             settlement_speed: g.settlement_speed,
             startup_offer: g.startup_offer,
             status_slot: g.status_slot,
+            approval_status: 'approved',
+            submitted_at: new Date(),
+            reviewed_at: new Date(),
+            reviewed_by: 'seed',
             fit_score: 0,
         });
 
@@ -411,6 +434,12 @@ async function seed() {
             start_date: startDate,
             end_date: endDate,
             status: daysRemaining > 0 ? 'active' : 'expired',
+            approval_status: 'approved',
+            submitted_at: startDate,
+            reviewed_at: startDate,
+            reviewed_by: 'seed',
+            payment_status: 'completed',
+            is_active: daysRemaining > 0,
             vibe_score: 7 + (index % 4), // 7-10
             primary_corridor: index % 3 === 0 ? 'Global → Africa' : index % 3 === 1 ? 'US → LATAM' : 'EU → Asia',
             verified_2026: index < 5, // First 5 are verified
