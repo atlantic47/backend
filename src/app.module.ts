@@ -14,6 +14,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SeoModule } from './seo/seo.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
     AdminModule,
     SeoModule,
     AnalyticsModule,
+    PaymentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

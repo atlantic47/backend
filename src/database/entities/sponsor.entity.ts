@@ -69,4 +69,23 @@ export class Sponsor {
 
     @Column({ nullable: true })
     reviewed_by: string; // Admin identifier
+
+    // Payment tracking fields
+    @Column({ nullable: true })
+    payment_reference: string; // Paystack payment reference
+
+    @Column({ default: 'pending' })
+    payment_status: string; // 'pending', 'completed', 'failed'
+
+    @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+    payment_amount: number;
+
+    @Column({ type: 'timestamp', nullable: true })
+    paid_at: Date;
+
+    @Column({ default: false })
+    is_active: boolean; // Active after payment
+
+    @Column({ nullable: true })
+    tier: string; // 'Standard', 'Premium', 'Elite'
 }
