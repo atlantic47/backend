@@ -14,11 +14,7 @@ export class PricingStructure {
     gateway_id: number;
 
     // Pricing Model
-    @Column({
-        type: 'varchar',
-        length: 32,
-        default: 'flat_rate',
-    })
+    @Column({ type: 'varchar', length: 32, default: 'flat_rate' })
     pricing_model: string;
 
     // Local Transaction Fees

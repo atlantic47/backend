@@ -40,7 +40,7 @@ import { AdminUser } from './entities/admin-user.entity';
                 if (dbType === 'sqlite') {
                     return {
                         type: 'sqlite',
-                        database: configService.get('database.sqlitePath'),
+                        database: configService.get('database.sqlitePath') || 'data/paygate.sqlite',
                         ...baseOptions,
                     };
                 }
