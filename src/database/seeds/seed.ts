@@ -303,29 +303,49 @@ const gateways = [
 
 async function seed() {
     config();
-
     const dbType = process.env.DB_TYPE || 'mysql';
     const isSqlite = dbType === 'sqlite';
-
-    const dataSource = new DataSource({
-        type: isSqlite ? 'sqlite' : 'mysql',
-        ...(isSqlite
-            ? { database: process.env.SQLITE_DB_PATH || 'data/dev.sqlite' }
+    const dataSource = new DataSource(
+        isSqlite
+            ? {
+                  type: 'sqlite',
+                  database:
+                      process.env.DB_SQLITE_PATH ||
+                      process.env.SQLITE_DB_PATH ||
+                      'data/paygate.sqlite',
+                  entities: [
+                      PaymentGateway,
+                      Country,
+                      Currency,
+                      Sponsor,
+                      FounderOffer,
+                      PricingStructure,
+                  ],
+                  synchronize: true,
+              }
             : {
-                host: process.env.DB_HOST || 'localhost',
-                port: parseInt(process.env.DB_PORT || '3306', 10),
-                username: process.env.DB_USERNAME || 'root',
-                password: process.env.DB_PASSWORD || '',
-                database: process.env.DB_DATABASE || 'payment_gateway_db',
-            }),
-        entities: [PaymentGateway, Country, Currency, Sponsor, FounderOffer, PricingStructure],
-        synchronize: true,
-    });
+                  type: 'mysql',
+                  host: process.env.DB_HOST || 'localhost',
+                  port: parseInt(process.env.DB_PORT || '3306', 10),
+                  username: process.env.DB_USERNAME || 'root',
+                  password: process.env.DB_PASSWORD || '',
+                  database: process.env.DB_DATABASE || 'payment_gateway_db',
+                  entities: [
+                      PaymentGateway,
+                      Country,
+                      Currency,
+                      Sponsor,
+                      FounderOffer,
+                      PricingStructure,
+                  ],
+                  synchronize: true,
+              }
+    );
 
     await dataSource.initialize();
     console.log('✅ Database connected');
 
-    // Clear existing data (DB-specific)
+    // Clear existing data (disable FK checks)
     if (isSqlite) {
         await dataSource.query('PRAGMA foreign_keys = OFF');
         await dataSource.query('DELETE FROM payment_gateways_countries');
@@ -338,6 +358,7 @@ async function seed() {
         await dataSource.query('PRAGMA foreign_keys = ON');
     } else {
         await dataSource.query('SET FOREIGN_KEY_CHECKS = 0');
+        // Truncate tables including junction tables
         await dataSource.query('TRUNCATE TABLE payment_gateways_countries');
         await dataSource.query('TRUNCATE TABLE payment_gateways_currencies');
         await dataSource.getRepository(FounderOffer).clear();
@@ -394,6 +415,9 @@ async function seed() {
             reviewed_at: new Date(),
             reviewed_by: 'seed',
             fit_score: 0,
+            approval_status: 'approved',
+            submitted_at: new Date(),
+            reviewed_at: new Date(),
         });
 
         // Resolve relations

@@ -7,7 +7,10 @@ export default () => ({
     username: process.env.DB_USERNAME || 'root',
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_DATABASE || 'payment_gateway_db',
-    sqlitePath: process.env.SQLITE_DB_PATH || 'data/dev.sqlite',
+    sqlitePath:
+      process.env.DB_SQLITE_PATH ||
+      process.env.SQLITE_DB_PATH ||
+      'data/paygate.sqlite',
   },
 
   redis: {

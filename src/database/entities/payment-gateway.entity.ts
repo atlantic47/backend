@@ -99,7 +99,7 @@ export class PaymentGateway {
     settlement_hours: number;  // Convert T+1 to 24, T+7 to 168, etc.
 
     // JSON object for flexible fee structure (legacy/display)
-    @Column('json', { nullable: true })
+    @Column('simple-json', { nullable: true })
     fees: {
         transaction_fee?: string;
         setup_fee?: string;
@@ -108,7 +108,7 @@ export class PaymentGateway {
     };
 
     // Payment methods available per country
-    @Column('json', { nullable: true })
+    @Column('simple-json', { nullable: true })
     payment_methods: {
         [countryCode: string]: string[]; // e.g., { "KE": ["M-Pesa", "Cards"], "NG": ["Cards", "USSD"] }
     };

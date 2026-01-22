@@ -25,7 +25,7 @@ export class ConsultationRecommendation {
     @Column({ type: 'decimal', precision: 5, scale: 2 })
     score: number;
 
-    @Column({ type: 'json' })
+    @Column({ type: 'simple-json' })
     reasons: string[];
 
     @CreateDateColumn()
