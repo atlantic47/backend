@@ -11,6 +11,7 @@ import { Currency } from '../entities/currency.entity';
 import { Sponsor } from '../entities/sponsor.entity';
 import { FounderOffer } from '../entities/founder-offer.entity';
 import { PricingStructure } from '../entities/pricing-structure.entity';
+import { SeoMetadata } from '../entities/seo-metadata.entity';
 
 // Full list of countries
 const countriesList = [
@@ -318,7 +319,7 @@ async function seed() {
                 password: process.env.DB_PASSWORD || '',
                 database: process.env.DB_DATABASE || 'payment_gateway_db',
             }),
-        entities: [PaymentGateway, Country, Currency, Sponsor, FounderOffer, PricingStructure],
+        entities: [PaymentGateway, Country, Currency, Sponsor, FounderOffer, PricingStructure, SeoMetadata],
         synchronize: true,
     });
 
@@ -330,6 +331,7 @@ async function seed() {
         await dataSource.query('PRAGMA foreign_keys = OFF');
         await dataSource.query('DELETE FROM payment_gateways_countries');
         await dataSource.query('DELETE FROM payment_gateways_currencies');
+        await dataSource.getRepository(SeoMetadata).clear();
         await dataSource.getRepository(FounderOffer).clear();
         await dataSource.getRepository(Sponsor).clear();
         await dataSource.getRepository(PaymentGateway).clear();
@@ -340,6 +342,7 @@ async function seed() {
         await dataSource.query('SET FOREIGN_KEY_CHECKS = 0');
         await dataSource.query('TRUNCATE TABLE payment_gateways_countries');
         await dataSource.query('TRUNCATE TABLE payment_gateways_currencies');
+        await dataSource.getRepository(SeoMetadata).clear();
         await dataSource.getRepository(FounderOffer).clear();
         await dataSource.getRepository(Sponsor).clear();
         await dataSource.getRepository(PaymentGateway).clear();
@@ -468,6 +471,39 @@ async function seed() {
         await offerRepo.save(offers);
         console.log(`✅ Seeded ${offers.length} founder offers`);
     }
+
+    // Seed SEO Metadata
+    const seoRepo = dataSource.getRepository(SeoMetadata);
+    const seoData = [
+        {
+            page_route: '/',
+            title: 'PayGate Directory - Global Payment Gateway Database',
+            description: 'The database of verified payment gateways for every country. Find the best payment solution for your business.',
+            keywords: 'payment gateway, payment processor, online payments, payment solutions, global payments',
+            og_title: 'PayGate Directory - Find the Perfect Payment Gateway',
+            og_description: 'Discover and compare payment gateways worldwide. Filter by country, currency, and features to find your ideal payment solution.',
+        },
+        {
+            page_route: '/faq',
+            title: 'Frequently Asked Questions - PayGate Directory',
+            description: 'Common questions about payment gateways, integration, fees, and choosing the right payment solution for your business.',
+            keywords: 'payment gateway faq, payment processor questions, payment integration help',
+        },
+        {
+            page_route: '/advertise',
+            title: 'Advertise Your Payment Gateway - PayGate Directory',
+            description: 'Reach thousands of businesses looking for payment solutions. Advertise your payment gateway on PayGate Directory.',
+            keywords: 'payment gateway advertising, sponsor payment directory, payment gateway marketing',
+        },
+        {
+            page_route: '/need-help',
+            title: 'Need Help? - PayGate Directory',
+            description: 'Get personalized recommendations for payment gateways. Our team will help you find the perfect payment solution.',
+            keywords: 'payment gateway consultation, payment solution help, payment gateway recommendations',
+        },
+    ];
+    await seoRepo.save(seoData);
+    console.log(`✅ Seeded ${seoData.length} SEO metadata entries`);
 
     await dataSource.destroy();
     console.log('🎉 Database seeding completed!');

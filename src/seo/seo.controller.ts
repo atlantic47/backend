@@ -20,7 +20,11 @@ export class SeoController {
     @Get(':route')
     @Public()
     async findByRoute(@Param('route') route: string) {
-        return await this.seoService.findByRoute(route);
+        const seoData = await this.seoService.findByRoute(route);
+        if (!seoData) {
+            return null; // Return null instead of undefined for proper JSON serialization
+        }
+        return seoData;
     }
 
     // Admin-only endpoints
