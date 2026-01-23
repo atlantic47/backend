@@ -22,11 +22,28 @@ export class ConsultationsService {
         return this.consultationsRepository.save(consultation);
     }
 
+    async findAll(status?: string): Promise<Consultation[]> {
+        const where = status ? { status } : {};
+        return this.consultationsRepository.find({
+            where,
+            order: { created_at: 'DESC' },
+        });
+    }
+
     async findOne(id: string): Promise<Consultation | null> {
         return this.consultationsRepository.findOne({
             where: { id },
             relations: ['recommendations', 'recommendations.gateway'],
         });
+    }
+
+    async updateStatus(id: string, status: string): Promise<Consultation> {
+        await this.consultationsRepository.update(id, { status });
+        const updated = await this.findOne(id);
+        if (!updated) {
+            throw new Error('Consultation not found');
+        }
+        return updated;
     }
 
     async generateRecommendations(consultationId: string): Promise<ConsultationRecommendation[]> {

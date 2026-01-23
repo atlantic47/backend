@@ -17,6 +17,7 @@ import { CsrfGuard } from './csrf.guard';
 @Module({
   imports: [
     TypeOrmModule.forFeature([PaymentGateway, Sponsor, AdminUser]),
+    ConfigModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

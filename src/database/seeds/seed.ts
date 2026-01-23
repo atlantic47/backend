@@ -418,9 +418,6 @@ async function seed() {
             reviewed_at: new Date(),
             reviewed_by: 'seed',
             fit_score: 0,
-            approval_status: 'approved',
-            submitted_at: new Date(),
-            reviewed_at: new Date(),
         });
 
         // Resolve relations
