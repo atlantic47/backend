@@ -16,6 +16,13 @@ export class SeoController {
         return await this.seoService.findAll();
     }
 
+    // Public endpoint - get comparison metadata
+    @Get('comparison/:slug')
+    @Public()
+    async getComparisonMetadata(@Param('slug') slug: string) {
+        return await this.seoService.generateComparisonMetadata(slug);
+    }
+
     // Public endpoint - fetch by route
     @Get(':route')
     @Public()
