@@ -63,6 +63,8 @@ export class GatewaysService {
             max_monthly_fee,
             max_settlement_hours,
             business_type,
+            category,
+            subcategory,
             sortBy,
             sortOrder
         } = filterDto;
@@ -132,6 +134,16 @@ export class GatewaysService {
         // Business type filter
         if (business_type) {
             queryBuilder.andWhere('FIND_IN_SET(:business_type, gateway.business_type) > 0', { business_type });
+        }
+
+        // Category filter
+        if (category) {
+            queryBuilder.andWhere('gateway.category = :category', { category });
+        }
+
+        // Subcategory filter
+        if (subcategory) {
+            queryBuilder.andWhere('FIND_IN_SET(:subcategory, gateway.subcategories) > 0', { subcategory });
         }
 
         // Only show active and approved gateways by default unless overridden

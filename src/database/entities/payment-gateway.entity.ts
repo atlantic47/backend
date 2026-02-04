@@ -63,6 +63,15 @@ export class PaymentGateway {
     @Column('simple-array', { nullable: true })
     business_type: string[];
 
+    // Fintech category: 'payments', 'banking', 'infrastructure', etc.
+    @Column({ length: 50, nullable: true })
+    @Index()
+    category: string;
+
+    // Subcategories within the main category
+    @Column('simple-array', { nullable: true })
+    subcategories: string[];
+
     // Local payment methods supported (e.g. M-Pesa, Boleto, etc.)
     @Column('simple-array', { nullable: true })
     local_payments_supported: string[];

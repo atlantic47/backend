@@ -40,6 +40,15 @@ export class CreateGatewayDto {
     @IsOptional()
     business_type?: string[];
 
+    @IsString()
+    @IsOptional()
+    category?: string;
+
+    @IsArray()
+    @IsString({ each: true })
+    @IsOptional()
+    subcategories?: string[];
+
     @IsArray()
     @IsString({ each: true })
     @IsOptional()

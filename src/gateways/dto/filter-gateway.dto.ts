@@ -69,6 +69,16 @@ export class FilterGatewayDto {
     @IsString()
     business_type?: string;  // 'Gateway', 'Processor', 'Aggregator', 'Remittance'
 
+    // Fintech category filter
+    @IsOptional()
+    @IsString()
+    category?: string;  // 'payments', 'banking', 'infrastructure', etc.
+
+    // Subcategory filter
+    @IsOptional()
+    @IsString()
+    subcategory?: string;  // 'Gateways', 'Neobanks', 'BNPL', etc.
+
     @IsOptional()
     @IsString()
     @IsIn(['name', 'fit_score', 'created_at', 'local_fee_percentage', 'international_fee_percentage', 'settlement_hours'])
