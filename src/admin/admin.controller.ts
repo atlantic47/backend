@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Param, Body, HttpException, HttpStatus, SetMetadata } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, HttpException, HttpStatus, SetMetadata, UseGuards } from '@nestjs/common';
 import { AdminService } from './admin.service';
+import { AdminGuard } from './admin.guard';
+import { IS_PUBLIC_KEY } from './auth.constants';
 
-export const IS_PUBLIC_KEY = 'isPublic';
 export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
 
 @Controller('admin')
+@UseGuards(AdminGuard) // Protect ALL admin endpoints
 export class AdminController {
     constructor(private readonly adminService: AdminService) { }
 
@@ -55,6 +57,17 @@ export class AdminController {
         try {
             const sponsor = await this.adminService.rejectSponsor(+id, body.adminId || 'admin');
             return { success: true, sponsor };
+        } catch (error) {
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // Utility endpoint to fix existing approved gateways
+    @Post('gateways/fix-status-slot')
+    async fixApprovedGatewaysStatusSlot() {
+        try {
+            const result = await this.adminService.fixApprovedGatewaysStatusSlot();
+            return { success: true, ...result };
         } catch (error) {
             throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
         }

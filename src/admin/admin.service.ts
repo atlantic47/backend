@@ -29,10 +29,27 @@ export class AdminService {
         }
 
         gateway.approval_status = 'approved';
+        gateway.status_slot = 'active'; // Ensure status_slot is set
         gateway.reviewed_at = new Date();
         gateway.reviewed_by = adminId;
 
         return this.gatewayRepository.save(gateway);
+    }
+
+    async fixApprovedGatewaysStatusSlot() {
+        // Update all approved gateways that don't have a status_slot
+        const result = await this.gatewayRepository
+            .createQueryBuilder()
+            .update(PaymentGateway)
+            .set({ status_slot: 'active' })
+            .where('approval_status = :status', { status: 'approved' })
+            .andWhere('(status_slot IS NULL OR status_slot = :empty)', { empty: '' })
+            .execute();
+
+        return {
+            message: 'Successfully updated approved gateways',
+            affectedRows: result.affected || 0,
+        };
     }
 
     async rejectGateway(id: number, adminId: string) {

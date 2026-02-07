@@ -9,12 +9,14 @@ import {
     Query,
     ValidationPipe,
     UseInterceptors,
+    UseGuards,
 } from '@nestjs/common';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import { GatewaysService } from './gateways.service';
 import { CreateGatewayDto } from './dto/create-gateway.dto';
 import { UpdateGatewayDto } from './dto/update-gateway.dto';
 import { FilterGatewayDto } from './dto/filter-gateway.dto';
+import { AdminGuard } from '../admin/admin.guard';
 
 @Controller('gateways')
 export class GatewaysController {
@@ -40,6 +42,7 @@ export class GatewaysController {
     }
 
     @Patch(':id')
+    @UseGuards(AdminGuard) // Only admins can update gateways
     update(
         @Param('id') id: string,
         @Body(ValidationPipe) updateGatewayDto: UpdateGatewayDto,
@@ -48,6 +51,7 @@ export class GatewaysController {
     }
 
     @Delete(':id')
+    @UseGuards(AdminGuard) // Only admins can delete gateways
     remove(@Param('id') id: string) {
         return this.gatewaysService.remove(+id);
     }

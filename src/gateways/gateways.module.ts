@@ -8,9 +8,13 @@ import { Currency } from '../database/entities/currency.entity';
 import { PricingStructure } from '../database/entities/pricing-structure.entity';
 import { PricingService } from './pricing.service';
 import { PricingController } from './pricing.controller';
+import { AdminModule } from '../admin/admin.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([PaymentGateway, Country, Currency, PricingStructure])],
+    imports: [
+        TypeOrmModule.forFeature([PaymentGateway, Country, Currency, PricingStructure]),
+        AdminModule, // Required for AdminGuard
+    ],
     controllers: [GatewaysController, PricingController],
     providers: [GatewaysService, PricingService],
     exports: [GatewaysService],

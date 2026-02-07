@@ -2,8 +2,7 @@ import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, Forbi
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { IS_PUBLIC_KEY } from './admin.controller';
-import { ACCESS_TOKEN_COOKIE, CSRF_TOKEN_COOKIE } from './auth.constants';
+import { IS_PUBLIC_KEY, ACCESS_TOKEN_COOKIE, CSRF_TOKEN_COOKIE } from './auth.constants';
 import type { Request } from 'express';
 
 @Injectable()

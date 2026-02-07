@@ -7,9 +7,11 @@ import {
     Param,
     Delete,
     UseInterceptors,
+    UseGuards,
 } from '@nestjs/common';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import { SponsorsService } from './sponsors.service';
+import { AdminGuard } from '../admin/admin.guard';
 
 @Controller('sponsors')
 export class SponsorsController {
@@ -58,16 +60,19 @@ export class SponsorsController {
      * Create new sponsor advertisement
      */
     @Post()
+    @UseGuards(AdminGuard) // Only admins can create sponsors
     create(@Body() createSponsorDto: any) {
         return this.sponsorsService.createSponsor(createSponsorDto);
     }
 
     @Patch(':id')
+    @UseGuards(AdminGuard) // Only admins can update sponsors
     update(@Param('id') id: string, @Body() updateSponsorDto: any) {
         return this.sponsorsService.update(+id, updateSponsorDto);
     }
 
     @Delete(':id')
+    @UseGuards(AdminGuard) // Only admins can delete sponsors
     remove(@Param('id') id: string) {
         return this.sponsorsService.remove(+id);
     }

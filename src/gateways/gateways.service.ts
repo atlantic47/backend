@@ -25,6 +25,7 @@ export class GatewaysService {
         const gateway = this.gatewayRepository.create({
             ...gatewayData,
             approval_status: 'pending',
+            status_slot: 'active', // Set to active so it appears once approved
             submitted_at: new Date(),
         });
 
